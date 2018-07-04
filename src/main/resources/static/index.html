@@ -9,22 +9,68 @@
     <script src="js/react.js"></script>
     <script src="js/react-dom.js"></script>
     <script src="js/browser.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/login.js"></script>
+   
     <script type="text/babel">
 
-var Employee = React.createClass({
-  render: function() {
-    return (<div>employee</div>);
-  }
-});
 var EmployeeTable = React.createClass({
-  render: function() {
-    return (<div>employee table</div>);
-  }
+ 
+getInitialState: function() {
+    return { 
+			 username:"",
+			 password:""
+		};
+},
+ 
+componentDidMount: function(){
+
+},
+
+componentWillUnmount: function(){
+
+},
+
+ handleSubmit: function() { 
+	
+ //	alert(this.props.url + "  "+ JSON.stringify(this.state));
+	alert(document.getElementById("username").value +" " + document.getElementById("password").value);
+ 	var data  =  {username:"",password:""};
+   $.ajax({
+      url: "http://localhost:8080/myapp/test",
+      dataType: 'json',
+      type: 'POST',
+      data: data,
+      success: function(data) {
+		alert("Success" + data);
+        this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+		alert("error");
+       console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+	 
+	return false; 
+  },
+ 
+ render () {
+    return (
+     <form onSubmit={this.handleSubmit} >
+       <input type="text" id="username" placeholder="username..." onChange={this.handleChange} required />
+       <br />
+       <input type="password" id="password" placeholder="password..." onChange={this.handleChange} required />
+       <br />
+       <input type="submit" value="Submit" />
+     </form>
+   );
+ }
 });
 
 ReactDOM.render(
   <EmployeeTable />, document.getElementById('root')
 );
+
 
 </script>
 </body>
