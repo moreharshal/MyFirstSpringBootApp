@@ -33,20 +33,24 @@ componentWillUnmount: function(){
 
  handleSubmit: function() { 
 	
- //	alert(this.props.url + "  "+ JSON.stringify(this.state));
-	alert(document.getElementById("username").value +" " + document.getElementById("password").value);
- 	var data  =  {username:"",password:""};
+	//alert($("#username").val() +" " +  $("#password").val()); 	
+	var data = {
+    		username : $("#username").val(),
+    		password :  $("#password").val()
+    	}
+	
    $.ajax({
-      url: "http://localhost:8080/myapp/test",
+      url: "http://localhost:8090/myapp/test",
       dataType: 'json',
       type: 'POST',
-      data: data,
+	  contentType : "application/json",
+      data: JSON.stringify(data),
       success: function(data) {
-		alert("Success" + data);
+		//alert("Success" + data);
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
-		alert("error");
+		alert( err.toString());
        console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
@@ -70,7 +74,6 @@ componentWillUnmount: function(){
 ReactDOM.render(
   <EmployeeTable />, document.getElementById('root')
 );
-
 
 </script>
 </body>
