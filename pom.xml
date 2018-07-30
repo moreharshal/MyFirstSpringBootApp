@@ -43,7 +43,11 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+		    <groupId>com.github.eirslett</groupId>
+		    <artifactId>frontend-maven-plugin</artifactId>
+		    <version>1.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>
