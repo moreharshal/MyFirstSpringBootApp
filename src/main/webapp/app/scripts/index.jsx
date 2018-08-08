@@ -1,21 +1,14 @@
 import React from 'react'
 
-export default class EmployeeTable extends React.Component{
-	 
-	getInitialState: function() {
+export default class EmployeeTable extends React.Component {
+	getInitialState() {
 	    return { 
 				 username:"",
 				 password:""
 			};
-	},
+	}
 	 
-	componentDidMount: function(){
-	},
-	componentWillUnmount: function(){
-	},
-	 handleSubmit: function() { 
-		
-		//alert($("#username").val() +" " +  $("#password").val()); 	
+	handleSubmit() { 
 		var data = {
 	    		username : $("#username").val(),
 	    		password :  $("#password").val()
@@ -28,7 +21,7 @@ export default class EmployeeTable extends React.Component{
 		  contentType : "application/json",
 	      data: JSON.stringify(data),
 	      success: function(data) {
-			//alert("Success" + data);
+			// alert("Success" + data);
 	        this.setState({data: data});
 	      }.bind(this),
 	      error: function(xhr, status, err) {
@@ -38,7 +31,7 @@ export default class EmployeeTable extends React.Component{
 	    });
 		 
 		return false; 
-	  },
+	  }
 	 
 	 render () {
 	    return (
