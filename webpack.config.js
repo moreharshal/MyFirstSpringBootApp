@@ -21,13 +21,8 @@ module.exports = {
                 }
             },
             {
-                test : /\.css/,
-                exclude: /(node_modules)/,
-                loader : "css-loader",
-                query: {
-                    cacheDirectory: true,
-                    presets: ['es2015', 'react']
-                }
+                test : /\.css$/,
+                use: ['style-loader', 'css-loader?modules=true']
             }
         ]
     }

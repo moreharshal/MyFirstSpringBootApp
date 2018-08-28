@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../../resources/static/login.css';
+import styles from '../../resources/static/login.css';
 
 class Login extends Component {
 
@@ -26,11 +26,11 @@ class Login extends Component {
     
   render() {
     return (
-      <div id="panel" class="container" >      
-       <form class="form-signin" >
+      <div id="panel">
+       <form  class={styles["form-signin"]} >
          <table>
          <tr>
-              <td><h2 class="form-signin-heading" >Please Sign In</h2></td>
+              <td><h2  class={styles["form-signin-heading"]} >Please Sign In</h2></td>
           </tr>             
            <tr>
              <td>
