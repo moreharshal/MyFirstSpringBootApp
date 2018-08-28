@@ -1,0 +1,225 @@
+html,body
+{
+    height: 100%;
+    background-color: #5cbeef;
+    font-family: "Verdana", Tahoma, Geneva, sans-serif !important;
+}
+
+img {
+    height: 95px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#logo {
+    position: absolute;
+    z-index: 10;
+    background-color: #0086bf;
+    width: 100%;
+    top: 20px;
+}
+
+#panel {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    top: 30%;
+    cursor: default;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+#help {
+    font-size: 11px;
+    display: inline-block;
+    text-align: right;
+    width: 100%;
+    margin: auto;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+#helpText {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+#helpMessage {
+    font-size: 11px;
+    margin-bottom: 15px;
+}
+
+#returnSignin {
+    display: inline-block;
+    font-size: 11px;
+    text-align: center;
+    vertical-align: middle;
+    width: 40%;
+    margin-right: 10%;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+.form-signin {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 382px;
+    padding-top: 0;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    -pie-box-shadow: 0 0 14px 4px #f6f7fe, 0px 8px 10px #e5f2f8;
+    box-shadow: 0 0 14px rgba(34, 61, 255, 0.04), 0px 0 14px rgba(34, 61, 255, 0.04), 0px 8px 10px rgba(0, 130, 190, 0.1);
+    border-width: 1px;
+    border-style: solid;
+    border-color: #5cbeef;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+
+#signinButton {
+    margin-top: 15px;
+    letter-spacing: 2px;
+    border-radius: 6px;
+}
+#buttons
+#sendButton {
+    font-weight: bold;
+    letter-spacing: 2px;
+    width: 50%;
+    color: #0086bf;
+}
+
+#buttons {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #0086bf;
+}
+
+.hr {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #0f558d;
+    border-color: #d6d6d6;
+    border-style: solid;
+}
+
+.form-signin .checkbox {
+    font-weight: normal;
+}
+
+.form-signin .form-control {
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: 10px;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 5px;
+}
+
+.carousel,
+.item,
+.active {
+    height: 100%;
+}
+
+.carousel-fade .carousel-inner .item {
+    opacity: 0;
+    -webkit-transition: background-color 100ms ease-out 100ms;
+    -moz-transition: background-color 100ms ease-out 100ms;
+    -o-transition: background-color 100ms ease-out 100ms;
+    transition: background-color 100ms ease-out 100ms;
+}
+
+.carousel-fade .carousel-inner .active {
+    opacity: 1;
+}
+
+.carousel-fade .carousel-inner .active.left,
+.carousel-fade .carousel-inner .active.right {
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+}
+
+.carousel-fade .carousel-inner .next.left,
+.carousel-fade .carousel-inner .prev.right {
+    opacity: 1;
+}
+
+.carousel-fade .carousel-control {
+    z-index: 2;
+}
+
+.carousel-inner {
+    height: 100%;
+}
+
+.fill {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+#version {
+    position: absolute;
+    width: 100%;
+    z-index: 30;
+    bottom: 0;
+    padding: 6px;
+    background-color: rgba(0, 0, 0, 0.45);
+    text-align: center;
+    letter-spacing: .6px;
+    font-size: 9px;
+    color: #dadada;
+}
+
+#ideasLink:visited {
+    color: #dadada;
+}
+
+#ideasLink:link {
+    color: #dadada;
+}
+
+#announcementPanel {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    padding: 6px;
+    background-color: rgba(0, 0, 0, 0.45);
+    text-align: center;
+}
+
+.alert {
+    padding: 10px;
+    margin: 10px 0 10px;
+}
