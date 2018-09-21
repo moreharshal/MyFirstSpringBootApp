@@ -4,4 +4,5 @@ node_modules/
 /.classpath
 /.project
 /package-lock.json
+/src/main/resources/static/built/
 /.gitignore
