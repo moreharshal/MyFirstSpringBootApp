@@ -26,37 +26,48 @@ class Login extends Component {
   }
 
   handleSubmit (){
+	  console.log("hI i am here");
       event.preventDefault();
-       var body = {
-          userName: document.getElementById("username"),
-          password: document.getElementById("password")
-      }
-      alert(body);
-      axios.post({url:"http://localhost:8080/myapps/authenticate",data:body,
-          config: { headers: {'Content-Type': 'application/json'}}})
+      
+      var jsonData = {};
+      jsonData['username'] =document.getElementById("username").value;
+      jsonData['password'] =document.getElementById("password").value;       
+ 
+      let axiosConfig = {
+    		  headers: {
+    		      'Content-Type': 'application/json;charset=UTF-8',
+    		      "Access-Control-Allow-Origin": "*",
+    		  }
+    		};
+      
+      axios.post("/myapp/authenticate",JSON.stringify(jsonData),axiosConfig)
           .then(response => {
-            console.log(response);
+        	  console.log("sdfasdf");
+        	  alert("response" + response);
           })
+          .catch(error => {
+        	  alert("error   " + error.response.data.message);
+          });
   }
     
   render() {
     return (
-      <div id="panel"  onSubmit={this.handleClick} >
-       <form  class={styles["form-signin"]} >
+      <div id="panel"   >
+       <form  className={styles["form-signin"]} method="post" >
          <table>
          <tr>
-              <td><h2  class={styles["form-signin-heading"]} >Please Sign In</h2></td>
+              <td><h2  className={styles["form-signin-heading"]} >Please Sign In</h2></td>
           </tr>             
            <tr>
              <td>
-                <input type="text" name="username" id = "username" placeholder="Email Address" required="this is required" autoFocus="" onChange={this.handleChange(this)}  class="form-control" />
+                <input type="text" name="username" id = "username" placeholder="Email Address" required="this is required" autoFocus=""  className="form-control" />
              </td>
           </tr>
           <tr>
-            <td><input type="password" name="password"  id = "password" placeholder="Password"  required="true"  autoFocus="" class="form-control" /></td>
+            <td><input type="password" name="password"  id = "password" placeholder="Password"  required="true"  autoFocus="" className="form-control" /></td>
           </tr>
             <tr>
-              <td><button id="sendButton" type="submit" >SIGN IN</button></td>
+              <td><button onClick={this.handleSubmit}>SIGN IN</button></td>
             </tr>
           </table>
        </form>
