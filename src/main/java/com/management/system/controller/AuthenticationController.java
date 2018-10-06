@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     @RequestMapping(method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String setAgentPollInterval(LoginBean json) {
+    public String authenticate(@RequestBody LoginBean json) {
         System.out.println(" UserName "+ json.getUsername());
         return "sdfgdf";
     }

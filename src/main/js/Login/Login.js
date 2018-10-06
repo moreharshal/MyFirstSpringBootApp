@@ -26,24 +26,21 @@ class Login extends Component {
   }
 
   handleSubmit (){
-	  console.log("hI i am here");
-      event.preventDefault();
-      
+
       var jsonData = {};
       jsonData['username'] =document.getElementById("username").value;
-      jsonData['password'] =document.getElementById("password").value;       
- 
+      jsonData['password'] =document.getElementById("password").value;
+
       let axiosConfig = {
     		  headers: {
-    		      'Content-Type': 'application/json;charset=UTF-8',
+    		      'Content-Type': 'application/json',
     		      "Access-Control-Allow-Origin": "*",
     		  }
     		};
-      
-      axios.post("/myapp/authenticate",JSON.stringify(jsonData),axiosConfig)
+
+      axios.post("/myapp/authenticate",jsonData,axiosConfig)
           .then(response => {
-        	  console.log("sdfasdf");
-        	  alert("response" + response);
+        	   alert("response" + response);
           })
           .catch(error => {
         	  alert("error   " + error.response.data.message);
