@@ -6,10 +6,10 @@ class Login extends Component {
 
   constructor(props){
     super(props);
-    this.state={
-    username:'',
-    password:''
-    }
+    this.state={'username':'', 'password':''}    
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -20,17 +20,18 @@ class Login extends Component {
 
   }
 
-  handleChange(event){
-      const {name,value} =event.target();
-      alert(name + " "+ value);
+  handleChange(event){	  
+      var value = event.target.value;
+      var source = event.target.id;
+      if(source=='username'){
+    	  this.setState({'username': value});  
+      }else{
+    	  this.setState({'password': value});  
+      }
   }
 
-  handleSubmit (){
-
-      var jsonData = {};
-      jsonData['username'] =document.getElementById("username").value;
-      jsonData['password'] =document.getElementById("password").value;
-
+  handleSubmit(event){
+	  event.preventDefault();
       let axiosConfig = {
     		  headers: {
     		      'Content-Type': 'application/json',
@@ -38,7 +39,7 @@ class Login extends Component {
     		  }
     		};
 
-      axios.post("/myapp/authenticate",jsonData,axiosConfig)
+      axios.post("/myapp/authenticate",this.state,axiosConfig)
           .then(response => {
         	   alert("response" + response);
           })
@@ -50,21 +51,21 @@ class Login extends Component {
   render() {
     return (
       <div id="panel"   >
-       <form  className={styles["form-signin"]} method="post" >
+       <form  className={styles["form-signin"]} method="post" onSubmit={this.handleSubmit}>
          <table>
          <tr>
               <td><h2  className={styles["form-signin-heading"]} >Please Sign In</h2></td>
           </tr>             
            <tr>
              <td>
-                <input type="text" name="username" id = "username" placeholder="Email Address" required="this is required" autoFocus=""  className="form-control" />
+                <input type="text" name="username" id = "username" placeholder="Email Address" required="this is required" autoFocus="" onChange={this.handleChange} className="form-control" />
              </td>
           </tr>
           <tr>
-            <td><input type="password" name="password"  id = "password" placeholder="Password"  required="true"  autoFocus="" className="form-control" /></td>
+            <td><input type="password" name="password"  id = "password" placeholder="Password"  required="true"  autoFocus=""  onChange={this.handleChange} className="form-control"  /></td>
           </tr>
             <tr>
-              <td><button onClick={this.handleSubmit}>SIGN IN</button></td>
+              <td><button>SIGN IN</button></td>
             </tr>
           </table>
        </form>
