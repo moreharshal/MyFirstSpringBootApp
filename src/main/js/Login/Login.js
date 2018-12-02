@@ -1,6 +1,9 @@
+'use strict';
 import React, { Component } from 'react';
 import styles from '../../resources/static/login.css';
 import axios from 'axios';
+import Dashboard from "./Dashboard";
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 class Login extends Component {
 
@@ -41,7 +44,13 @@ class Login extends Component {
 
       axios.post("/myapp/authenticate",this.state,axiosConfig)
           .then(response => {
-        	   alert("response" + response);
+
+            alert("response" + response);
+            <Route path="/dashboard" component={Dashboard} />
+              //  <Redirect push to="/dashboard"/>
+        	  // this.props.history.push('/dashboard');
+
+            alert(" This is last line at response");
           })
           .catch(error => {
         	  alert("error   " + error.response.data.message);
