@@ -18,7 +18,7 @@ class Dashboard extends Component {
   render() {
     return (
       <div id="panel" >
-            Test
+            Path Does Not Exist.
         </div>
     );
   }

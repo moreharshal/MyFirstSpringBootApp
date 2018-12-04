@@ -1,5 +1,8 @@
 'use strict';
-import Login from "./Login/Login";
+import Login from "./components/Login";
+import Error from "./components/Error";
+import Dashboard from "./components/Dashboard";
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -16,9 +19,15 @@ class App extends React.Component {
 
 	}
 
-	render() {
+	render() {		
 		return (
-			<Login />
+			<BrowserRouter>				 
+			 	<Switch>
+				 	 <Route path="/Error" component={Error} exact />
+				 	 <Route path="/dashboard" component={Dashboard} exact />
+				 	 <Route component={Login} />
+			 	 </Switch>			
+			</BrowserRouter>
 		)
 	}
 }
