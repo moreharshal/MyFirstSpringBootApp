@@ -23,8 +23,8 @@ class App extends React.Component {
 		return (
 			<BrowserRouter>				 
 			 	<Switch>
-				 	 <Route path="/Error" component={Error} exact />
-				 	 <Route path="/dashboard" component={Dashboard} exact />
+				 	 <Route path="/myapp/Error" component={Error} exact />
+				 	 <Route path="/myapp/dashboard" component={Dashboard} exact />
 				 	 <Route component={Login} />
 			 	 </Switch>			
 			</BrowserRouter>

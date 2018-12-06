@@ -47,7 +47,7 @@ class Login extends Component {
           .then(response => {
 
             alert("response" + response);
-            this.props.history.push('/dashboard');
+            this.props.history.push('/myapp/dashboard');
 
             alert(" This is last line at response");
           })
