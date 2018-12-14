@@ -73,4 +73,11 @@
        Docker Build Image:      docker build -f DockerFile -t dockerspringboot  .
        List Images:    			docker images -a   
        remove all dangling images: docker images purge
-       to run docker image:        docker run -p 8090:8090 dockerspringboot
+       to run docker image:        docker run -p 8090:8090 dockerspringboot       
+       List all containers (only IDs) : docker ps -aq
+	   Stop all running containers :     docker stop $(docker ps -aq)
+	   Remove all containers	  :  docker rm $(docker ps -aq)
+	   Remove all images :       docker rmi $(docker images -q)
+	   
+	   
+	   ===================================
