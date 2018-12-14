@@ -61,7 +61,16 @@
           
           mvn spring-boot:run
           java -jar target/myapplication-0.0.1-SNAPSHOT.jar
+       
+       
           
           https://medium.com/@benjaminliu_42474/how-to-setup-spring-boot-with-reactjs-and-webpack-9b190edeb0c8
 
           npm i -D css-loader style-loader
+          
+          
+       =========Docker commands=============   
+       Docker Build Image:      docker build -f DockerFile -t dockerspringboot  .
+       List Images:    			docker images -a   
+       remove all dangling images: docker images purge
+       to run docker image:        docker run -p 8090:8090 dockerspringboot
