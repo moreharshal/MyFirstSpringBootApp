@@ -49,11 +49,14 @@ class Login extends Component {
     		  }
     		};
 
-      axios.post("/myapp/authenticate",this.state,axiosConfig)
+      axios.post("/myapp/authenticate", {
+        username: this.state.username,
+        password: this.state.password
+      }, axiosConfig)
           .then(response => {
-            if (response.data && response.data.success) {
-              localStorage.setItem('login_username', response.data.username || this.state.username);
-              localStorage.setItem('login_time', response.data.loginTime || '');
+            if (response.data && response.data.success && response.data.token) {
+              // Store only the auth token - username and loginTime will be validated from backend
+              localStorage.setItem('auth_token', response.data.token);
               this.props.history.push('/myapp/dashboard');
               return;
             }

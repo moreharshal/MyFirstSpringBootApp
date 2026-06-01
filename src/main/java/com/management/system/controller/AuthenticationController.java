@@ -1,6 +1,8 @@
 package com.management.system.controller;
 
 
+import com.management.system.service.AuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,13 @@ import java.time.LocalDateTime;
 @RequestMapping("/authenticate")
 public class AuthenticationController {
 
+    private final AuthenticationService authenticationService;
+
+    @Autowired
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
+
     @RequestMapping(method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponse> authenticate(@RequestBody LoginBean json) {
         if (json == null || isBlank(json.getUsername()) || isBlank(json.getPassword())) {
@@ -20,12 +29,19 @@ public class AuthenticationController {
             );
         }
 
-        if ("admin".equals(json.getUsername()) && "admin123".equals(json.getPassword())) {
+        boolean authenticated = authenticationService.authenticate(
+                json.getUsername(),
+                json.getPassword()
+        );
+
+        if (authenticated) {
+            String token = authenticationService.generateSessionToken(json.getUsername());
             AuthResponse response = new AuthResponse(
                     true,
                     "Login successful.",
                     json.getUsername(),
-                    LocalDateTime.now().toString()
+                    LocalDateTime.now().toString(),
+                    token
             );
             return ResponseEntity.ok(response);
         }

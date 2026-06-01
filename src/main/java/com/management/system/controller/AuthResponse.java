@@ -6,6 +6,7 @@ public class AuthResponse {
     private String message;
     private String username;
     private String loginTime;
+    private String token;
 
     public AuthResponse() {
     }
@@ -15,6 +16,14 @@ public class AuthResponse {
         this.message = message;
         this.username = username;
         this.loginTime = loginTime;
+    }
+
+    public AuthResponse(boolean success, String message, String username, String loginTime, String token) {
+        this.success = success;
+        this.message = message;
+        this.username = username;
+        this.loginTime = loginTime;
+        this.token = token;
     }
 
     public boolean isSuccess() {
@@ -47,5 +56,13 @@ public class AuthResponse {
 
     public void setLoginTime(String loginTime) {
         this.loginTime = loginTime;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
