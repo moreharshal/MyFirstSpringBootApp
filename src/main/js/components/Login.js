@@ -10,7 +10,12 @@ class Login extends Component {
 
   constructor(props){
     super(props);
-    this.state={'username':'', 'password':''}    
+    this.state = {
+      'username': '',
+      'password': '',
+      'errorMessage': '',
+      'isSubmitting': false
+    }
     
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,7 +29,7 @@ class Login extends Component {
 
   }
 
-  handleChange(event){	  
+  handleChange(event){
       var value = event.target.value;
       var source = event.target.id;
       if(source=='username'){
@@ -36,6 +41,7 @@ class Login extends Component {
 
   handleSubmit(event){
 	  event.preventDefault();
+      this.setState({ errorMessage: '', isSubmitting: true });
       let axiosConfig = {
     		  headers: {
     		      'Content-Type': 'application/json',
@@ -45,14 +51,21 @@ class Login extends Component {
 
       axios.post("/myapp/authenticate",this.state,axiosConfig)
           .then(response => {
+            if (response.data && response.data.success) {
+              localStorage.setItem('login_username', response.data.username || this.state.username);
+              localStorage.setItem('login_time', response.data.loginTime || '');
+              this.props.history.push('/myapp/dashboard');
+              return;
+            }
 
-            alert("response" + response);
-            this.props.history.push('/myapp/dashboard');
-
-            alert(" This is last line at response");
+            this.setState({ errorMessage: 'Login failed. Please try again.' });
           })
           .catch(error => {
-        	  alert("error   " + error.response.data.message);
+            var apiMessage = error && error.response && error.response.data && error.response.data.message;
+	        this.setState({ errorMessage: apiMessage || 'Unable to login. Please check credentials.' });
+          })
+          .then(() => {
+            this.setState({ isSubmitting: false });
           });
   }
     
@@ -64,6 +77,11 @@ class Login extends Component {
          <tr>
               <td><h2  className={styles["form-signin-heading"]} >Please Sign In</h2></td>
           </tr>             
+          {this.state.errorMessage &&
+            <tr>
+              <td style={{ color: '#c62828', paddingBottom: '10px' }}>{this.state.errorMessage}</td>
+            </tr>
+          }
            <tr>
              <td>
                 <input type="text" name="username" id = "username" placeholder="Email Address" required="this is required" autoFocus="" onChange={this.handleChange} className="form-control" />
@@ -73,7 +91,7 @@ class Login extends Component {
             <td><input type="password" name="password"  id = "password" placeholder="Password"  required="true"  autoFocus=""  onChange={this.handleChange} className="form-control"  /></td>
           </tr>
             <tr>
-              <td><button>SIGN IN</button></td>
+              <td><button disabled={this.state.isSubmitting}>{this.state.isSubmitting ? 'SIGNING IN...' : 'SIGN IN'}</button></td>
             </tr>
           </table>
        </form>
