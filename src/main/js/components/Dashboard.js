@@ -42,9 +42,12 @@ class Dashboard extends Component {
   }
 
   handleLogout() {
-    localStorage.removeItem('login_username');
-    localStorage.removeItem('login_time');
-    this.props.history.replace('/myapp/');
+    axios.post('/myapp/authenticate/logout')
+      .finally(() => {
+        localStorage.removeItem('login_username');
+        localStorage.removeItem('login_time');
+        this.props.history.replace('/myapp/');
+      });
   }
 
   render() {

@@ -25,12 +25,10 @@ public class AuthenticationController {
         String validUsername = System.getenv("AUTH_USERNAME");
         String validPassword = System.getenv("AUTH_PASSWORD");
 
-        // Fallback to application properties if environment variables are not set
-        if (isBlank(validUsername)) {
-            validUsername = "admin"; // Default for development only
-        }
-        if (isBlank(validPassword)) {
-            validPassword = "admin123"; // Default for development only
+        if (isBlank(validUsername) || isBlank(validPassword)) {
+            return ResponseEntity.status(500).body(
+                    new AuthResponse(false, "Authentication is not configured.", null, null)
+            );
         }
 
         if (validUsername.equals(json.getUsername()) && validPassword.equals(json.getPassword())) {
@@ -69,6 +67,12 @@ public class AuthenticationController {
         return ResponseEntity.status(401).body(
                 new AuthResponse(false, "Not authenticated.", null, null)
         );
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public ResponseEntity<Void> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.noContent().build();
     }
 
     private boolean isBlank(String value) {
