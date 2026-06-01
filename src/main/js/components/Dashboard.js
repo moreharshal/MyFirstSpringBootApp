@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class Dashboard extends Component {
 
@@ -12,14 +13,28 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    var username = localStorage.getItem('login_username');
-    var loginTime = localStorage.getItem('login_time');
-    if(!username){
-      this.props.history.replace('/myapp/');
-      return;
-    }
-
-    this.setState({ username: username, loginTime: loginTime || '' });
+    // Verify session with backend instead of relying on localStorage alone
+    axios.get('/myapp/authenticate/verify')
+      .then(response => {
+        if (response.data && response.data.success) {
+          // Use authoritative server response for user state
+          this.setState({
+            username: response.data.username,
+            loginTime: response.data.loginTime || ''
+          });
+          // Sync localStorage with backend state
+          localStorage.setItem('login_username', response.data.username);
+          localStorage.setItem('login_time', response.data.loginTime || '');
+        } else {
+          // Server says not authenticated, redirect to login
+          this.props.history.replace('/myapp/');
+        }
+      })
+      .catch(error => {
+        // If server responds with unauthenticated, redirect to login
+        console.error('Session verification failed:', error);
+        this.props.history.replace('/myapp/');
+      });
   }
 
   componentWillUnmount() {

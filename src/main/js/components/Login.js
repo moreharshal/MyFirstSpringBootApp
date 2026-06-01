@@ -22,11 +22,11 @@ class Login extends Component {
   }
 
   componentDidMount() {
-
+    this._isMounted = true;
   }
 
   componentWillUnmount() {
-
+    this._isMounted = false;
   }
 
   handleChange(event){
@@ -49,7 +49,13 @@ class Login extends Component {
     		  }
     		};
 
-      axios.post("/myapp/authenticate",this.state,axiosConfig)
+      // Send only auth fields to avoid accidental contract drift
+      const payload = {
+        username: this.state.username,
+        password: this.state.password
+      };
+
+      axios.post("/myapp/authenticate", payload, axiosConfig)
           .then(response => {
             if (response.data && response.data.success) {
               localStorage.setItem('login_username', response.data.username || this.state.username);
@@ -58,14 +64,23 @@ class Login extends Component {
               return;
             }
 
-            this.setState({ errorMessage: 'Login failed. Please try again.' });
+            // Check mount status before setState
+            if (this._isMounted) {
+              this.setState({ errorMessage: 'Login failed. Please try again.' });
+            }
           })
           .catch(error => {
             var apiMessage = error && error.response && error.response.data && error.response.data.message;
-	        this.setState({ errorMessage: apiMessage || 'Unable to login. Please check credentials.' });
+            // Check mount status before setState
+            if (this._isMounted) {
+              this.setState({ errorMessage: apiMessage || 'Unable to login. Please check credentials.' });
+            }
           })
           .then(() => {
-            this.setState({ isSubmitting: false });
+            // Check mount status before setState to prevent setState-after-unmount
+            if (this._isMounted) {
+              this.setState({ isSubmitting: false });
+            }
           });
   }
     
