@@ -1,0 +1,28 @@
+name: Forward PR Review to External App
+
+on:
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+jobs:
+  forward-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send PR Review to External App
+        run: |
+          curl -X POST https://hangnail-used-emergency.ngrok-free.dev/api/webhooks/c6ad61a3-6933-4100-a6bb-9c5e254b58be \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
+            -d '{
+              "event": "pull_request_review",
+              "action": "${{ github.event.review.state }}",
+              "pr_number": ${{ github.event.pull_request.number }},
+              "pr_title": "${{ github.event.pull_request.title }}",
+              "pr_url": "${{ github.event.pull_request.html_url }}",
+              "reviewer": "${{ github.event.review.user.login }}",
+              "review_body": "${{ github.event.review.body }}",
+              "review_state": "${{ github.event.review.state }}",
+              "repo": "${{ github.repository }}",
+              "submitted_at": "${{ github.event.review.submitted_at }}"
+            }'
