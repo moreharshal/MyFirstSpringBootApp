@@ -1,5 +1,16 @@
-- name: Send PR Review to External App
-  env:
-    GH_EVENT: ${{ toJSON(github.event) }}
-  run: |
-    curl -X POST https://hangnail-used-emergency.ngrok-free.dev/api/webhooks/c6ad61a3-6933-4100-a6bb-9c5e254b58be  -H "Content-Type: application/json" -H "X-GitHub-Event: pull_request_review"  -d "$GH_EVENT"
+name: Forward PR Review to External App GH event
+
+on:
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+jobs:
+  forward-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send PR Review to External App
+        env:
+          GH_EVENT: ${{ toJSON(github.event) }}
+        run: |
+          curl -X POST https://hangnail-used-emergency.ngrok-free.dev/api/webhooks/c6ad61a3-6933-4100-a6bb-9c5e254b58be  -H "Content-Type: application/json" -H "X-GitHub-Event: pull_request_review"  -d "$GH_EVENT"
