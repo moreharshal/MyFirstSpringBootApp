@@ -22,6 +22,7 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: |
           set -euo pipefail
 
@@ -48,7 +49,7 @@ jobs:
                 state:    $event.review.state,
                 html_url: $event.review.html_url,
                 body:     $event.review.body,
-                user:     { login: $reviewer }
+                user:     { login: $event.review.user.login }
               }
             }')
 
@@ -58,8 +59,7 @@ jobs:
             awk '{print $NF}')"
 
           # Forward as a GitHub-style webhook event.
-          curl --fail-with-body -sS -X POST \
-            https://hangnail-used-emergency.ngrok-free.dev/api/webhooks/c6ad61a3-6933-4100-a6bb-9c5e254b58be \
+          curl --fail-with-body -sS -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -H "X-GitHub-Event: pull_request_review" \
             -H "X-GitHub-Delivery: ${RUN_ID}-${RUN_ATTEMPT}" \
