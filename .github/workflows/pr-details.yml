@@ -11,25 +11,21 @@ jobs:
     steps:
       - name: Build, sign, and forward PR review webhook
         env:
-          # Pass everything through env so nothing is interpolated into the
-          # shell/jq script body (avoids script injection and broken JSON).
           EVENT: ${{ toJSON(github.event) }}
           ACTION: ${{ github.event.action }}
           REPO: ${{ github.repository }}
-          SENDER: ${{ github.actor }}
+          REVIEWER: ${{ github.event.review.user.login }}
           RUN_ID: ${{ github.run_id }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
           set -euo pipefail
 
-          # Build the payload from the raw event JSON. jq handles nulls,
-          # quotes, and newlines correctly without any string interpolation.
           PAYLOAD=$(jq -n \
             --argjson event "$EVENT" \
             --arg action "$ACTION" \
             --arg repo "$REPO" \
-            --arg sender "$SENDER" \
+            --arg reviewer "$REVIEWER" \
             '{
               action: $action,
               review: {
@@ -49,18 +45,17 @@ jobs:
                 state: $event.pull_request.state,
                 merged: ($event.pull_request.merged // false),
                 title: $event.pull_request.title,
-                body: $event.pull_request.body
+                body: $event.pull_request.body,
+                user: { login: $reviewer }
               },
               repository: { full_name: $repo },
-              sender: { login: $sender }
+              sender: { login: $reviewer }
             }')
 
-          # Sign the payload with the webhook secret (same scheme as GitHub).
           SIGNATURE="sha256=$(printf '%s' "$PAYLOAD" | \
             openssl dgst -sha256 -hmac "$WEBHOOK_SECRET" | \
             awk '{print $NF}')"
 
-          # Forward as a GitHub-style webhook event.
           curl --fail-with-body -sS -X POST \
             https://hangnail-used-emergency.ngrok-free.dev/api/webhooks/c6ad61a3-6933-4100-a6bb-9c5e254b58be \
             -H "Content-Type: application/json" \
