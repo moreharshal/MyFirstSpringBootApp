@@ -19,7 +19,7 @@ public class Calculator {
      * @param b second integer operand
      * @return the sum of a and b
      */
-    public int add(int a, int b) {
+    public int add( a,  b) {
         return a + b;
     }
 
