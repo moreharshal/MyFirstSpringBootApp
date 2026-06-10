@@ -1,0 +1,71 @@
+name: Forward PR Review as Webhook Event
+
+on:
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+jobs:
+  forward-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build, sign, and forward PR review webhook
+        env:
+          # Pass everything through env so nothing is interpolated into the
+          # shell/jq script body (avoids script injection and broken JSON).
+          EVENT: ${{ toJSON(github.event) }}
+          ACTION: ${{ github.event.action }}
+          REPO: ${{ github.repository }}
+          SENDER: ${{ github.actor }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        run: |
+          set -euo pipefail
+
+          # Build the payload from the raw event JSON. jq handles nulls,
+          # quotes, and newlines correctly without any string interpolation.
+          PAYLOAD=$(jq -n \
+            --argjson event "$EVENT" \
+            --arg action "$ACTION" \
+            --arg repo "$REPO" \
+            --arg sender "$SENDER" \
+            '{
+              action: $action,
+              review: {
+                id: $event.review.id,
+                state: $event.review.state,
+                submitted_at: $event.review.submitted_at,
+                user: {
+                  login: $event.review.user.login,
+                  id: $event.review.user.id
+                },
+                html_url: $event.review.html_url,
+                body: $event.review.body
+              },
+              pull_request: {
+                number: $event.pull_request.number,
+                url: $event.pull_request.html_url,
+                state: $event.pull_request.state,
+                merged: ($event.pull_request.merged // false),
+                title: $event.pull_request.title,
+                body: $event.pull_request.body
+              },
+              repository: { full_name: $repo },
+              sender: { login: $sender }
+            }')
+
+          # Sign the payload with the webhook secret (same scheme as GitHub).
+          SIGNATURE="sha256=$(printf '%s' "$PAYLOAD" | \
+            openssl dgst -sha256 -hmac "$WEBHOOK_SECRET" | \
+            awk '{print $NF}')"
+
+          # Forward as a GitHub-style webhook event.
+          curl --fail-with-body -sS -X POST \
+            https://hangnail-used-emergency.ngrok-free.dev/api/webhooks/c6ad61a3-6933-4100-a6bb-9c5e254b58be \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: pull_request_review" \
+            -H "X-GitHub-Delivery: ${RUN_ID}-${RUN_ATTEMPT}" \
+            -H "X-Hub-Signature-256: $SIGNATURE" \
+            -H "User-Agent: GitHub-Hookshot/actions" \
+            -d "$PAYLOAD"
