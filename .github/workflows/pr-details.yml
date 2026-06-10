@@ -9,50 +9,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build, sign, and forward PR review webhook
+      - name: Sign and forward PR review webhook
         env:
-          # Pass everything through env so nothing is interpolated into the
-          # shell/jq script body (avoids script injection and broken JSON).
+          # Only the fields the backend normalizer reads are forwarded.
+          # The reviewer login is placed in pull_request.user.login so it
+          # normalizes into the `author` field that the trigger filters on.
           EVENT: ${{ toJSON(github.event) }}
           ACTION: ${{ github.event.action }}
           REPO: ${{ github.repository }}
-          SENDER: ${{ github.actor }}
+          CLONE_URL: ${{ github.event.repository.clone_url }}
+          REVIEWER: ${{ github.event.review.user.login }}
           RUN_ID: ${{ github.run_id }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         run: |
           set -euo pipefail
 
-          # Build the payload from the raw event JSON. jq handles nulls,
-          # quotes, and newlines correctly without any string interpolation.
+          # Build the minimal GitHub-shaped payload. Every key here maps to a
+          # field in the backend's normalize_event(); nothing else is read.
           PAYLOAD=$(jq -n \
             --argjson event "$EVENT" \
             --arg action "$ACTION" \
             --arg repo "$REPO" \
-            --arg sender "$SENDER" \
+            --arg clone_url "$CLONE_URL" \
+            --arg reviewer "$REVIEWER" \
             '{
               action: $action,
-              review: {
-                id: $event.review.id,
-                state: $event.review.state,
-                submitted_at: $event.review.submitted_at,
-                user: {
-                  login: $event.review.user.login,
-                  id: $event.review.user.id
-                },
-                html_url: $event.review.html_url,
-                body: $event.review.body
-              },
+              repository: { full_name: $repo, clone_url: $clone_url },
               pull_request: {
                 number: $event.pull_request.number,
-                url: $event.pull_request.html_url,
-                state: $event.pull_request.state,
-                merged: ($event.pull_request.merged // false),
-                title: $event.pull_request.title,
-                body: $event.pull_request.body
-              },
-              repository: { full_name: $repo },
-              sender: { login: $sender }
+                title:  $event.pull_request.title,
+                body:   $event.pull_request.body,
+                user:   { login: $reviewer },
+                base:   { ref: $event.pull_request.base.ref },
+                head:   { ref: $event.pull_request.head.ref, sha: $event.pull_request.head.sha }
+              }
             }')
 
           # Sign the payload with the webhook secret (same scheme as GitHub).
