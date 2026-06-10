@@ -43,6 +43,12 @@ jobs:
                 user:   { login: $reviewer },
                 base:   { ref: $event.pull_request.base.ref },
                 head:   { ref: $event.pull_request.head.ref, sha: $event.pull_request.head.sha }
+              },
+              review: {
+                state:    $event.review.state,
+                html_url: $event.review.html_url,
+                body:     $event.review.body,
+                user:     { login: $reviewer }
               }
             }')
 
